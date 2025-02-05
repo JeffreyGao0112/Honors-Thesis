@@ -59,7 +59,10 @@ def find_and_select_peaks(x, y, num_desired_peaks=8, min_prominence_percentile=1
 if __name__ == "__main__":
     datafolderpath = 'C:/Personal/Honors Thesis/src/Data'
     filename = 'JJG1-00314-1.dat'
-    # Load the data (replace this with actual file reading if needed)
+   
+    #<<<<<<<<<<<<<<<<< Laptop Path. Comment out if not on laptop >>>>>>>>>>>>>>
+    datafolderpath = 'C:/Users/jgao0/.vscode/Personal/Honors-Thesis/Data/'
+
     data = np.loadtxt(datafolderpath + filename, delimiter=None)
     x = data[:, 0]  # Angle values
     y = data[:, 1]  # Intensity values
