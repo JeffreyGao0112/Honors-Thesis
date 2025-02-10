@@ -29,45 +29,52 @@ def find_and_select_peaks(x, y, num_desired_peaks=8, min_prominence_percentile=1
             sorted_peak_indices = np.argsort(peak_prominences)[::-1]
             top_peak_indices = sorted_peak_indices[:num_desired_peaks]
             top_peaks = peaks[top_peak_indices]
-            top_peak_prominences = peak_prominences[top_peak_indices]
             break  # Exit loop once enough peaks are found
         elif prominence_percentile == 100 and peaks.size < num_desired_peaks:
             peak_prominences = properties.get("prominences", np.zeros(len(peaks)))
             sorted_peak_indices = np.argsort(peak_prominences)[::-1]
             top_peak_indices = sorted_peak_indices[:min(num_desired_peaks, len(peaks))]
             top_peaks = peaks[top_peak_indices]
-            top_peak_prominences = peak_prominences[top_peak_indices]
             print("Could not reach desired number of peaks. Returning available peaks.")
             break
         elif prominence_percentile == 100 and peaks.size == 0: # Check if no peaks are found at 100%
             print("No peaks found even at 100% prominence.")
             top_peaks = np.array([])
-            top_peak_prominences = np.array([])
             break
 
+    x_coords = []
+    y_coords = []
+    
+    available_peaks = min(num_desired_peaks, len(top_peaks)) # Number of real peaks
 
-    feature_vector = []
-    for i in range(num_desired_peaks):
-        if top_peaks.size > 0 and i < len(top_peaks):
-            feature_vector.extend([x[top_peaks[i]], y[top_peaks[i]]])
-        else:
-            feature_vector.extend([-1, -1])  # Pad with -1 if fewer peaks
+    for i in range(available_peaks):
+        if top_peaks.size > 0: # Check if there is at least one peak
+            x_coords.append(x[top_peaks[i]])
+            y_coords.append(y[top_peaks[i]])
 
-    return top_peaks, top_peak_prominences, feature_vector
+    # Pad with -1 if necessary:
+    while len(x_coords) < num_desired_peaks:
+        x_coords.append(-1)
+        y_coords.append(-1)
+
+
+    feature_vector = np.array([x_coords, y_coords])
+    feature_vector = feature_vector.flatten().reshape(1, -1)
+    return feature_vector, top_peaks
 
 
 if __name__ == "__main__":
-    datafolderpath = 'C:/Personal/Honors Thesis/src/Data'
+    datafolderpath = 'C:/Personal/Honors Thesis/src/Data/'
     filename = 'JJG1-00314-1.dat'
    
     #<<<<<<<<<<<<<<<<< Laptop Path. Comment out if not on laptop >>>>>>>>>>>>>>
-    datafolderpath = 'C:/Users/jgao0/.vscode/Personal/Honors-Thesis/Data/'
+    #datafolderpath = 'C:/Users/jgao0/.vscode/Personal/Honors-Thesis/Data/'
 
     data = np.loadtxt(datafolderpath + filename, delimiter=None)
     x = data[:, 0]  # Angle values
     y = data[:, 1]  # Intensity values
 
-    top_peaks, top_peak_prominences, feature_vector = find_and_select_peaks(x,y)
+    feature_vector, top_peaks = find_and_select_peaks(x,y)
     # Plot results
     plt.plot(x, y, label="XRPD Pattern")
 
