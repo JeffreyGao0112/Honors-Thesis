@@ -26,7 +26,7 @@ def read_xy_files(folder_path):
         print(f"Folder not found: {folder_path}")
     return data
 
-folder_path = "C:/Personal/Honors Thesis/src/Data/"
+folder_path = "C:/Personal/Honors Thesis/src/Data2/"
 #folder_path = "C:/Users/jgao0/.vscode/Personal/Honors-Thesis/Data/"  # LAPTOP PATH
 xy_data_list = read_xy_files(folder_path)
 

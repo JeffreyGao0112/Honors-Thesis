@@ -42,30 +42,25 @@ def find_and_select_peaks(x, y, num_desired_peaks=8, min_prominence_percentile=1
             top_peaks = np.array([])
             break
 
-    x_coords = []
-    y_coords = []
-    
+    feature_vector = []
     available_peaks = min(num_desired_peaks, len(top_peaks)) # Number of real peaks
 
     for i in range(available_peaks):
         if top_peaks.size > 0: # Check if there is at least one peak
-            x_coords.append(x[top_peaks[i]])
-            y_coords.append(y[top_peaks[i]])
+            feature_vector.append(x[top_peaks[i]])
 
     # Pad with -1 if necessary:
-    while len(x_coords) < num_desired_peaks:
-        x_coords.append(-1)
-        y_coords.append(-1)
+    while len(feature_vector) < num_desired_peaks:
+        feature_vector.append(-1)
 
-
-    feature_vector = np.array([x_coords, y_coords])
+    feature_vector = np.array([feature_vector])
     feature_vector = feature_vector.flatten().reshape(1, -1)
     return feature_vector, top_peaks
 
 
 if __name__ == "__main__":
-    datafolderpath = 'C:/Personal/Honors Thesis/src/Data/'
-    filename = 'JJG1-00314-1.dat'
+    datafolderpath = 'C:/Personal/Honors Thesis/src/Data2/'
+    filename = '103695-050-6.dat'
    
     #<<<<<<<<<<<<<<<<< Laptop Path. Comment out if not on laptop >>>>>>>>>>>>>>
     #datafolderpath = 'C:/Users/jgao0/.vscode/Personal/Honors-Thesis/Data/'
