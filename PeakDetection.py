@@ -57,6 +57,37 @@ def find_and_select_peaks(x, y, num_desired_peaks=8, min_prominence_percentile=1
     feature_vector = feature_vector.flatten().reshape(1, -1)
     return feature_vector, top_peaks
 
+def bucketize(x, y, bucket_width=0.50):
+    min_x = np.min(x)
+    max_x = np.max(x)
+
+    num_buckets = int(np.ceil((max_x - min_x) / bucket_width)) # Calculate number of buckets
+    bucket_max_y = np.full(num_buckets, -np.inf) # Initialize with negative infinity
+
+    current_bucket_start = np.floor(min_x / bucket_width) * bucket_width
+
+    for i in range(num_buckets):
+        current_bucket_end = current_bucket_start + bucket_width
+
+        # Find indices of x-values within the current bucket
+        indices_in_bucket = np.where((x >= current_bucket_start) & (x < current_bucket_end))[0]
+
+        if indices_in_bucket.size > 0:  # Check if any points are in the bucket
+            max_y_in_bucket = np.max(y[indices_in_bucket])
+            bucket_max_y[i] = max_y_in_bucket
+
+        current_bucket_start = current_bucket_end
+
+    # Replace -inf with NaN for empty buckets (optional, but often useful)
+    bucket_max_y = bucket_max_y/np.max(y)
+    for i in range(len(bucket_max_y)):
+        bucket_max_y[i] = bucket_max_y[i]**2
+    
+    bucket_max_y[bucket_max_y == -np.inf] = np.nan
+
+
+    return np.array(bucket_max_y)
+
 
 if __name__ == "__main__":
     datafolderpath = 'C:/Personal/Honors Thesis/src/Data2/'
@@ -69,6 +100,9 @@ if __name__ == "__main__":
     x = data[:, 0]  # Angle values
     y = data[:, 1]  # Intensity values
 
+    print(bucketize(x,y))
+
+    """
     feature_vector, top_peaks = find_and_select_peaks(x,y)
     # Plot results
     plt.plot(x, y, label="XRPD Pattern")
@@ -88,3 +122,7 @@ if __name__ == "__main__":
         print("No peaks found above thresholds.")
 
     print("Feature Vector:", feature_vector)
+    """
+
+    #TODO:
+    #Fix padding for np.array feature vectors produced from bucketize. Try clustering
