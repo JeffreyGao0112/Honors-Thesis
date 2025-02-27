@@ -89,6 +89,7 @@ def bucketize(x, y, bucket_width=0.50):
     return np.array(bucket_max_y)
 
 
+
 if __name__ == "__main__":
     datafolderpath = 'C:/Personal/Honors Thesis/src/Data2/'
     filename = '103695-050-6.dat'
@@ -100,9 +101,9 @@ if __name__ == "__main__":
     x = data[:, 0]  # Angle values
     y = data[:, 1]  # Intensity values
 
-    print(bucketize(x,y))
+    #print(bucketize(x,y))
 
-    """
+    
     feature_vector, top_peaks = find_and_select_peaks(x,y)
     # Plot results
     plt.plot(x, y, label="XRPD Pattern")
@@ -122,7 +123,7 @@ if __name__ == "__main__":
         print("No peaks found above thresholds.")
 
     print("Feature Vector:", feature_vector)
-    """
+    
 
     #TODO:
     #Fix padding for np.array feature vectors produced from bucketize. Try clustering

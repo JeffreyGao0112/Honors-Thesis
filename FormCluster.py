@@ -74,7 +74,7 @@ def cluster_and_plot(data_folder, plot_folder, cluster_folder):
     
     # Autoencoder
     input_dim = padded_feature_vectors.shape[1]
-    autoencoder, encoder_model = create_autoencoder(input_dim, 3)
+    autoencoder, encoder_model = create_autoencoder(input_dim, 1)
 
     # Train the autoencoder (handle NaNs) - Corrected mask usage
     row_valid_mask = ~np.all(np.isnan(padded_feature_vectors), axis=1) # 1D mask
@@ -83,7 +83,7 @@ def cluster_and_plot(data_folder, plot_folder, cluster_folder):
     # Get encoded features
     encoded_features = encoder_model.predict(padded_feature_vectors, verbose=0)
     
-    eps_value = 0.1
+    eps_value = 0.02
     min_samples_value = 2
 
     dbscan = DBSCAN(eps=eps_value, min_samples=min_samples_value)
@@ -122,27 +122,28 @@ def cluster_and_plot(data_folder, plot_folder, cluster_folder):
         if label != -1:
             cluster_size = np.sum(clusters == label)
             print(f"Size of cluster {label}: {cluster_size}")
-
     """
-    # Visualization of encoded features
-    plt.figure()
+    #Visualization 3D
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
     colors = plt.cm.Spectral(np.linspace(0, 1, len(unique_labels)))
     for k, col in zip(unique_labels, colors):
         if k == -1:
             col = [0, 0, 0, 1]  # Black for outliers
         class_member_mask = (clusters == k)
         xy = encoded_features[class_member_mask]
-        plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col, markeredgecolor='k', markersize=6)
+        ax.scatter(xy[:, 0], xy[:, 1], xy[:, 2], c=[col], marker='o', edgecolor='k', s=36)
 
-    plt.title("Encoded Features (Encoding Dim = 2) with DBSCAN Clusters")
-    plt.xlabel("Encoded Feature 1")
-    plt.ylabel("Encoded Feature 2")
+    ax.set_title("Encoded Features (Encoding Dim = 3) with DBSCAN Clusters")
+    ax.set_xlabel("Encoded Feature 1")
+    ax.set_ylabel("Encoded Feature 2")
+    ax.set_zlabel("Encoded Feature 3")
     plt.show()
     """
 
 if __name__ == "__main__":
 
-    data_folder = "C:/Personal/Honors Thesis/src/Data2/"
+    data_folder = "C:/Personal/Honors Thesis/src/Data/"
     plot_folder = "C:/Personal/Honors Thesis/src/Plots/"
     cluster_folder = "C:/Personal/Honors Thesis/src/Clusters/"
 
